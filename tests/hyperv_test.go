@@ -69,12 +69,7 @@ var _ = Describe("[Serial][sig-compute] Hyper-V enlightenments", Serial, decorat
 			reEnlightenmentVMI = vmiWithReEnlightenment()
 		})
 
-		When("TSC frequency is exposed on the cluster", func() {
-			BeforeEach(func() {
-				if !isTSCFrequencyExposed(virtClient) {
-					Skip("TSC frequency is not exposed on the cluster")
-				}
-			})
+		When("TSC frequency is exposed on the cluster", decorators.TscFrequencies, func() {
 
 			It("should be able to migrate", func() {
 				var err error
