@@ -26,6 +26,8 @@ package virtconfig
 import (
 	"strings"
 
+	"kubevirt.io/kubevirt/pkg/virt-config/deprecation"
+
 	"kubevirt.io/client-go/log"
 
 	k8sv1 "k8s.io/api/core/v1"
@@ -467,4 +469,16 @@ func (c *ClusterConfig) GetNetworkBindings() map[string]v1.InterfaceBindingPlugi
 		return networkConfig.Binding
 	}
 	return nil
+}
+
+func (config *ClusterConfig) DockerSELinuxMCSWorkaroundEnabled() bool {
+	if config.isFeatureGateEnabled(deprecation.DockerSELinuxMCSWorkaround) {
+		return true
+	}
+	SELinuxMCSWorkaroundAnnotationExists := false
+	kv := config.GetConfigFromKubeVirtCR()
+	if kv != nil {
+		_, SELinuxMCSWorkaroundAnnotationExists = kv.Annotations[v1.DockerSELinuxMCSWorkaroundAnnotation]
+	}
+	return SELinuxMCSWorkaroundAnnotationExists
 }

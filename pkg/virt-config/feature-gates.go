@@ -19,7 +19,9 @@
 
 package virtconfig
 
-import "kubevirt.io/kubevirt/pkg/virt-config/deprecation"
+import (
+	"kubevirt.io/kubevirt/pkg/virt-config/deprecation"
+)
 
 /*
  This module is intended for determining whether an optional feature is enabled or not at the cluster-level.
@@ -192,10 +194,6 @@ func (config *ClusterConfig) ClusterProfilerEnabled() bool {
 
 func (config *ClusterConfig) WorkloadEncryptionSEVEnabled() bool {
 	return config.isFeatureGateEnabled(WorkloadEncryptionSEV)
-}
-
-func (config *ClusterConfig) DockerSELinuxMCSWorkaroundEnabled() bool {
-	return config.isFeatureGateEnabled(deprecation.DockerSELinuxMCSWorkaround)
 }
 
 func (config *ClusterConfig) VSOCKEnabled() bool {

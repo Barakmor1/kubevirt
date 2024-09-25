@@ -845,6 +845,11 @@ const (
 	Unknown VirtualMachineInstancePhase = "Unknown"
 )
 
+// Annotations in the KubeVirt custom resource are used to modify KubeVirt's behavior, often serving as workarounds for bugs in other layers.
+const (
+	// DockerSELinuxMCSWorkaround sets the SELinux level of all the non-compute virt-launcher containers to "s0".
+	DockerSELinuxMCSWorkaroundAnnotation string = "kubevirt.io/DockerSELinuxMCSWorkaround"
+)
 const (
 	// AppLabel and AppName labels marks resources that belong to KubeVirt. An optional value
 	// may indicate which specific KubeVirt component a resource belongs to.
