@@ -46,6 +46,8 @@ const (
 	NUMAFeatureGate        = "NUMA"               // GA
 	PasstGate              = "Passt"              // Deprecated
 	MacvtapGate            = "Macvtap"            // Deprecated
+	// DockerSELinuxMCSWorkaround sets the SELinux level of all the non-compute virt-launcher containers to "s0".
+	DockerSELinuxMCSWorkaround = "DockerSELinuxMCSWorkaround" // Deprecated
 )
 
 type FeatureGate struct {
@@ -67,6 +69,7 @@ func init() {
 
 	RegisterFeatureGate(FeatureGate{Name: PasstGate, State: Discontinued, Message: PasstDiscontinueMessage, VmiSpecUsed: passtApiUsed})
 	RegisterFeatureGate(FeatureGate{Name: MacvtapGate, State: Discontinued, Message: MacvtapDiscontinueMessage, VmiSpecUsed: macvtapApiUsed})
+	RegisterFeatureGate(FeatureGate{Name: DockerSELinuxMCSWorkaround, State: Deprecated, Message: "DockerSELinuxMCSWorkaround has been discontinued since v1.4. As an alternative, please add the annotation kubevirt.io/DockerSELinuxMCSWorkaround to kubevirt CR."})
 }
 
 // RegisterFeatureGate adds a given feature-gate to the FG list

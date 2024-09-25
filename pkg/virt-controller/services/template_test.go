@@ -56,6 +56,7 @@ import (
 	"kubevirt.io/kubevirt/pkg/testutils"
 	"kubevirt.io/kubevirt/pkg/util"
 	virtconfig "kubevirt.io/kubevirt/pkg/virt-config"
+	"kubevirt.io/kubevirt/pkg/virt-config/deprecation"
 	"kubevirt.io/kubevirt/pkg/virt-controller/watch/topology"
 	"kubevirt.io/kubevirt/tools/vms-generator/utils"
 )
@@ -524,7 +525,7 @@ var _ = Describe("Template", func() {
 				if enableWorkaround {
 					kvConfig.Spec.Configuration.DeveloperConfiguration.FeatureGates =
 						append(kvConfig.Spec.Configuration.DeveloperConfiguration.FeatureGates,
-							virtconfig.DockerSELinuxMCSWorkaround)
+							deprecation.DockerSELinuxMCSWorkaround)
 				}
 				testutils.UpdateFakeKubeVirtClusterConfig(kvStore, kvConfig)
 
