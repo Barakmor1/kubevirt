@@ -518,14 +518,17 @@ var _ = Describe("Template", func() {
 				Expect(pod.Spec.SecurityContext.SELinuxOptions).ToNot(BeNil())
 				Expect(pod.Spec.SecurityContext.SELinuxOptions.Type).To(Equal("spc_t"))
 			})
-			DescribeTable("should have an SELinux level of", func(enableWorkaround bool) {
+			DescribeTable("should have an SELinux level of", func(enableWorkaroundThroughFG bool, enableWorkaroundThroughAnn bool) {
 				config, kvStore, svc = configFactory(defaultArch)
 				kvConfig := kv.DeepCopy()
 				kvConfig.Spec.Configuration.SELinuxLauncherType = "spc_t"
-				if enableWorkaround {
+				if enableWorkaroundThroughFG {
 					kvConfig.Spec.Configuration.DeveloperConfiguration.FeatureGates =
 						append(kvConfig.Spec.Configuration.DeveloperConfiguration.FeatureGates,
 							deprecation.DockerSELinuxMCSWorkaround)
+				}
+				if enableWorkaroundThroughAnn {
+					kvConfig.Annotations = map[string]string{v1.DockerSELinuxMCSWorkaroundAnnotation: ""}
 				}
 				testutils.UpdateFakeKubeVirtClusterConfig(kvStore, kvConfig)
 
@@ -571,7 +574,7 @@ var _ = Describe("Template", func() {
 				Expect(err).ToNot(HaveOccurred())
 				for _, c := range pod.Spec.Containers {
 					if c.Name != "compute" {
-						if enableWorkaround {
+						if enableWorkaroundThroughFG || enableWorkaroundThroughAnn {
 							Expect(c.SecurityContext.SELinuxOptions.Level).To(Equal("s0"), "failed on "+c.Name)
 						} else {
 							if c.SecurityContext != nil && c.SecurityContext.SELinuxOptions != nil {
@@ -581,8 +584,10 @@ var _ = Describe("Template", func() {
 					}
 				}
 			},
-				Entry(`nothing on all virt-launcher containers`, false),
-				Entry(`"s0" on all but compute if the docker workaround is enabled`, true),
+				Entry(`nothing on all virt-launcher containers`, false, false),
+				Entry(`"s0" on all but compute if the docker workaround is enabled through feature gate`, true, false),
+				Entry(`"s0" on all but compute if the docker workaround is enabled through annotation`, false, true),
+				Entry(`"s0" on all but compute if the docker workaround is enabled through annotation and feature gate`, false, true),
 			)
 		})
 		DescribeTable("should check if proper environment variable is ",
