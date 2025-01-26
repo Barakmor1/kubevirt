@@ -86,7 +86,7 @@ const (
 
 const InvalidDataVolumeUrl = "docker://127.0.0.1/invalid:latest"
 
-var _ = SIGDescribe("DataVolume Integration", func() {
+var _ = SIGDescribe("DataVolume Integration", decorators.RequiresCDI, func() {
 
 	var virtClient kubecli.KubevirtClient
 	var err error

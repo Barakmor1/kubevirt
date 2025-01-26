@@ -83,6 +83,8 @@ var (
 	StorageCritical = Label("StorageCritical")
 	// Requires a storage class with volume expansion support
 	RequiresVolumeExpansion = Label("RequiresVolumeExpansion")
+	// Requires CDI operator
+	RequiresCDI = Label("RequiresCDI")
 	// Kubernetes versions
 	Kubernetes130 = Label("kubernetes130")
 	// WG archs

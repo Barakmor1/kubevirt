@@ -360,7 +360,7 @@ var _ = SIGMigrationDescribe("VM Live Migration", decorators.RequiresTwoSchedula
 				libmigration.ConfirmVMIPostMigration(virtClient, vmi, migration)
 			})
 
-			It("should migrate vmi and use Live Migration method with read-only disks", func() {
+			It("should migrate vmi and use Live Migration method with read-only disks", decorators.RequiresCDI, func() {
 				By("Defining a VMI with PVC disk and read-only CDRoms")
 				if !libstorage.HasCDI() {
 					Skip("Skip DataVolume tests when CDI is not present")
@@ -837,7 +837,7 @@ var _ = SIGMigrationDescribe("VM Live Migration", decorators.RequiresTwoSchedula
 			})
 		})
 
-		Context("with an Alpine DataVolume", func() {
+		Context("with an Alpine DataVolume", decorators.RequiresCDI, func() {
 			BeforeEach(func() {
 				if !libstorage.HasCDI() {
 					Skip("Skip DataVolume tests when CDI is not present")
@@ -1902,7 +1902,7 @@ var _ = SIGMigrationDescribe("VM Live Migration", decorators.RequiresTwoSchedula
 				libwait.WaitForMigrationToDisappearWithTimeout(migration, 240)
 			},
 				Entry("[sig-storage][test_id:2226] with ContainerDisk", newVirtualMachineInstanceWithFedoraContainerDisk),
-				Entry("[sig-storage][storage-req][test_id:2731] with RWX block disk from block volume PVC", decorators.StorageReq, newVirtualMachineInstanceWithFedoraRWXBlockDisk),
+				Entry("[sig-storage][storage-req][test_id:2731] with RWX block disk from block volume PVC", decorators.RequiresCDI, decorators.StorageReq, newVirtualMachineInstanceWithFedoraRWXBlockDisk),
 			)
 
 			It("[sig-compute][test_id:3241]Immediate migration cancellation after migration starts running cancel a migration by deleting vmim object", func() {

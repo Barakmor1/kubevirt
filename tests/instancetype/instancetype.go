@@ -703,7 +703,7 @@ var _ = Describe("[crit:medium][vendor:cnv-qe@redhat.com][level:component][sig-c
 		})
 	})
 
-	Context("with inferFromVolume", func() {
+	Context("with inferFromVolume", decorators.RequiresCDI, func() {
 		var (
 			vm           *virtv1.VirtualMachine
 			instancetype *instancetypev1beta1.VirtualMachineInstancetype

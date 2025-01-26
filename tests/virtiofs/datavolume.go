@@ -252,7 +252,7 @@ var _ = Describe("[sig-storage] virtiofs", decorators.SigStorage, func() {
 		})
 	})
 
-	Context("Run a VMI with VirtIO-FS and a datavolume", func() {
+	Context("Run a VMI with VirtIO-FS and a datavolume", decorators.RequiresCDI, func() {
 		var sc string
 
 		BeforeEach(func() {

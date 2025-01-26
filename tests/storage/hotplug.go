@@ -1235,7 +1235,7 @@ var _ = SIGDescribe("Hotplug", func() {
 			)
 		})
 
-		Context("disk mutating sidecar", func() {
+		Context("disk mutating sidecar", decorators.RequiresCDI, func() {
 			const (
 				hookSidecarImage = "example-disk-mutation-hook-sidecar"
 				newDiskImgName   = "kubevirt-disk.img"
@@ -1320,7 +1320,7 @@ var _ = SIGDescribe("Hotplug", func() {
 		})
 	})
 
-	Context("delete attachment pod several times", decorators.RequiresRWXBlock, func() {
+	Context("delete attachment pod several times", decorators.RequiresCDI, decorators.RequiresRWXBlock, func() {
 		var (
 			vm       *v1.VirtualMachine
 			hpvolume *cdiv1.DataVolume
@@ -1428,7 +1428,7 @@ var _ = SIGDescribe("Hotplug", func() {
 		})
 	})
 
-	Context("with limit range in namespace", decorators.RequiresRWXBlock, func() {
+	Context("with limit range in namespace", decorators.RequiresCDI, decorators.RequiresRWXBlock, func() {
 		var (
 			sc                         string
 			lr                         *k8sv1.LimitRange
