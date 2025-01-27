@@ -2805,6 +2805,10 @@ func (c *VirtualMachineController) vmUpdateHelperMigrationTarget(origVMI *v1.Vir
 		if err != nil {
 			return err
 		}
+		err = c.containerDiskMounter.MountKernelArtifacts(vmi, true)
+		if err != nil {
+			return fmt.Errorf("error mounting kernel artifacts: %v", err)
+		}
 	}
 
 	// Mount hotplug disks
@@ -3097,6 +3101,10 @@ func (c *VirtualMachineController) handleStartingVMI(
 			}
 			c.queue.AddAfter(controller.VirtualMachineInstanceKey(vmi), time.Second*1)
 			return false, nil
+		}
+		err = c.containerDiskMounter.MountKernelArtifacts(vmi, true)
+		if err != nil {
+			return fmt.Errorf("error mounting kernel artifacts: %v", err)
 		}
 
 		*disksInfo, err = c.containerDiskMounter.MountAndVerify(vmi)

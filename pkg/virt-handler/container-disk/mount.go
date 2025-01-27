@@ -59,6 +59,7 @@ type mounter struct {
 type Mounter interface {
 	ContainerDisksReady(vmi *v1.VirtualMachineInstance, notInitializedSince time.Time) (bool, error)
 	MountAndVerify(vmi *v1.VirtualMachineInstance) (map[string]*containerdisk.DiskInfo, error)
+	MountKernelArtifacts(vmi *v1.VirtualMachineInstance, verify bool) error
 	Unmount(vmi *v1.VirtualMachineInstance) error
 	ComputeChecksums(vmi *v1.VirtualMachineInstance) (*DiskChecksums, error)
 	ContainerDiskExist(vmi *v1.VirtualMachineInstance) (bool, error)
@@ -307,7 +308,12 @@ func (m *mounter) MountAndVerify(vmi *v1.VirtualMachineInstance) (map[string]*co
 				}
 			}
 
-			imageInfo, err := isolation.GetImageInfo(containerdisk.GetDiskTargetPathFromLauncherView(i), vmiRes, m.clusterConfig.GetDiskVerification())
+			// if ImageVolume is enabled ContainerDiskExist would return false and we would never get here
+			diskPath, err := containerdisk.GetDiskTargetPathFromLauncherView(i, false, volume.ContainerDisk.Path)
+			if err != nil {
+				return nil, err
+			}
+			imageInfo, err := isolation.GetImageInfo(diskPath, vmiRes, m.clusterConfig.GetDiskVerification())
 			if err != nil {
 				return nil, fmt.Errorf("failed to get image info: %v", err)
 			}
@@ -316,10 +322,6 @@ func (m *mounter) MountAndVerify(vmi *v1.VirtualMachineInstance) (map[string]*co
 			}
 			disksInfo[volume.Name] = imageInfo
 		}
-	}
-	err = m.mountKernelArtifacts(vmi, true)
-	if err != nil {
-		return nil, fmt.Errorf("error mounting kernel artifacts: %v", err)
 	}
 
 	return disksInfo, nil
@@ -415,7 +417,7 @@ func (m *mounter) ContainerDisksReady(vmi *v1.VirtualMachineInstance, notInitial
 
 // MountKernelArtifacts mounts artifacts defined by KernelBootName in VMI.
 // This function is assumed to run after MountAndVerify.
-func (m *mounter) mountKernelArtifacts(vmi *v1.VirtualMachineInstance, verify bool) error {
+func (m *mounter) MountKernelArtifacts(vmi *v1.VirtualMachineInstance, verify bool) error {
 	const kernelBootName = containerdisk.KernelBootName
 
 	log.Log.Object(vmi).Infof("mounting kernel artifacts")
