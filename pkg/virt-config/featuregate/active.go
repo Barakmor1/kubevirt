@@ -185,6 +185,12 @@ const (
 	// which allows terminating the VMI on guest reboot instead of silently rebooting,
 	// enabling the VM controller to recreate the VMI with updated configuration.
 	RebootPolicy = "RebootPolicy"
+	// Owner: @bmordeha
+	// Alpha: v1.8.0
+	//
+	// VmiMemoryOverheadReport enables reporting the memory overhead in the VMI status.
+	// When enabled, the memory overhead is calculated and set in the VMI status.Memory.MemoryOverhead field.
+	VmiMemoryOverheadReport = "VmiMemoryOverheadReport"
 )
 
 func init() {
@@ -225,4 +231,5 @@ func init() {
 	RegisterFeatureGate(FeatureGate{Name: PodSecondaryInterfaceNamingUpgrade, State: Beta})
 	RegisterFeatureGate(FeatureGate{Name: DisableNADResourceInjection, State: Beta})
 	RegisterFeatureGate(FeatureGate{Name: RebootPolicy, State: Alpha})
+	RegisterFeatureGate(FeatureGate{Name: VmiMemoryOverheadReport, State: Alpha})
 }
